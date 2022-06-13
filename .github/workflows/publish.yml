@@ -1,0 +1,23 @@
+name: publish
+
+on: [push]
+
+jobs:
+  publish-hash-image:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build the hash Docker image
+      run: |
+        docker build . --tag ghcr.io/hi0t/hash:latest
+        docker run ghcr.io/hi0t/hash:latest
+        docker push ghcr.io/hi0t/hash:latest
